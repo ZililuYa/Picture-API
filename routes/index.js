@@ -22,7 +22,7 @@ router.get('/search', function (req, res, next) {
   var options = {
     "method": "GET",
     "hostname": "image.so.com",
-    "path": encodeURI("/j?q=" + key + "&src=srp&correct=123&sn=" + current + "&pn=" + pageNum + "&ran=0&ras=0")
+    "path": encodeURI("/j?q=" + key + "&src=srp&correct=" + key + "&sn=" + current + "&pn=" + pageNum + "&ran=0&ras=0")
   };
   if (!key) {
     res.send({
