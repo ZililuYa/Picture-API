@@ -5,29 +5,18 @@
     </div>
     <div class="row">
       <Input class="input" v-model="input" @keyup.enter.native="isSearch" placeholder="请输入关键字">
-      <Button slot="append" icon="ios-search" type="primary" @click="isSearch">搜索</Button>
+        <Button slot="append" icon="ios-search" type="primary" @click="isSearch">搜索</Button>
       </Input>
     </div>
     <div class="row" v-if="data.length">
-      <!--<Table :columns="columns" :data="data"></Table>-->
-      <div class="col-sm-6 col-md-4 col-lg-3 ">
-        <div class="img" v-for="(item, i) in data" v-if="(i+1)%4 === 1">
+      <div class="col-sm-6 col-md-4 col-lg-3" v-for="x in 4">
+        <div class="img" v-for="(item, i) in data" v-if="i%4 === (x-1)">
           <img v-lazy="item.img" alt="">
-        </div>
-      </div>
-      <div class="col-sm-6 col-md-4 col-lg-3 ">
-        <div class="img" v-for="(item, i) in data" v-if="(i+1)%4 === 2">
-          <img v-lazy="item.img" alt="">
-        </div>
-      </div>
-      <div class="col-sm-6 col-md-4 col-lg-3 ">
-        <div class="img" v-for="(item, i) in data" v-if="(i+1)%4 === 3">
-          <img v-lazy="item.img" alt="">
-        </div>
-      </div>
-      <div class="col-sm-6 col-md-4 col-lg-3 ">
-        <div class="img" v-for="(item, i) in data" v-if="(i+1)%4 === 0">
-          <img v-lazy="item.img" alt="">
+          <div class="operation">
+            <div class="col-lg-4">{{item.imgsize}}</div>
+            <div class="col-lg-4">{{item.imgtype}}</div>
+            <div class="col-lg-4"><a :href="item.img" target="_blank">下载</a></div>
+          </div>
         </div>
       </div>
     </div>
@@ -52,7 +41,7 @@
     name: 'hello',
     data () {
       return {
-        input: '火影忍者壁纸',
+        input: '王者荣耀壁纸',
         total: 0,
         columns: [{
           title: '图片',
@@ -88,7 +77,7 @@
           } else {
             this.$Loading.error()
           }
-//          console.log(req.body)
+          console.log(req.body)
         })
       },
       isSearch () {
@@ -153,7 +142,7 @@
     padding-bottom: 20px;
     background-color: #fff;
     /*border-top:1px solid #e9eaec;*/
-    box-shadow: 0 0 10px #dddee1;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
     left: 0;
     bottom: 0;
   }
@@ -162,4 +151,15 @@
     top: auto !important;
     bottom: 50px !important;
   }
+  .operation {
+    overflow: hidden;
+    padding-top: 5px;
+  }
+  .operation .col-lg-4 {
+    border-right: 1px solid #d6d6d6;
+  }
+  .operation .col-lg-4:last-child {
+    border-right: 0;
+  }
+
 </style>

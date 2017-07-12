@@ -45,8 +45,19 @@ router.get('/search', function (req, res, next) {
       data.msg = '图片获取成功';
       res.send(data);
     });
+    opt.on('timeout',function(){
+      request.end();
+      res.send({
+        code: '500',
+        msg: '连接超时'
+      });
+    });
   }).on('error', function (e) {
     console.error(e);
+    res.send({
+      code: '500',
+      msg: '接口错误'
+    });
   });
   request.end();
 });
