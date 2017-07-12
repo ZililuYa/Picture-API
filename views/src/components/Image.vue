@@ -1,9 +1,10 @@
 <template>
   <div class="hello container">
     <div class="row ">
-      <!--<h1 class="image"><img v-lazy="title" alt=""></h1>-->
+      <h3>所有图片来源于 image.so.com</h3>
+      <br><br>
     </div>
-    <div class="row">
+    <div class="">
       <Input class="input" v-model="input" @keyup.enter.native="isSearch" placeholder="请输入关键字">
         <Button slot="append" icon="ios-search" type="primary" @click="isSearch">搜索</Button>
       </Input>
@@ -13,9 +14,9 @@
         <div class="img" v-for="(item, i) in data" v-if="i%4 === (x-1)">
           <img v-lazy="item.img" alt="">
           <div class="operation">
-            <div class="col-lg-4">{{item.imgsize}}</div>
-            <div class="col-lg-4">{{item.imgtype}}</div>
-            <div class="col-lg-4"><a :href="item.img" target="_blank">下载</a></div>
+            <div class="col-xs-4">{{item.imgsize}}</div>
+            <div class="col-xs-4">{{item.imgtype}}</div>
+            <div class="col-xs-4"><a :href="item.img" target="_blank">下载</a></div>
           </div>
         </div>
       </div>
@@ -112,8 +113,8 @@
     padding-top: 20px;
   }
 
-  .container {
-    padding-bottom: 150px;
+  .container.hello {
+    padding-bottom: 70px;
   }
 
   .ivu-table-cell {
