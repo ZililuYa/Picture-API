@@ -144,7 +144,7 @@
 <style>
 
   .padding0 {
-    padding: 0;
+    padding: 0 !important;
   }
   .demo-badge{
     padding: 0 20px;
