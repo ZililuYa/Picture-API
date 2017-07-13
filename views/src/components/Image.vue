@@ -1,18 +1,25 @@
 <template>
   <div class="hello container">
     <div class="row ">
-      <h3>所有图片来源于 image.so.com</h3>
+      <h3>所有图片来源于互联网</h3>
       <br><br>
     </div>
     <div class="">
       <Input class="input" v-model="input" @keyup.enter.native="isSearch" placeholder="请输入关键字">
-        <Button slot="append" icon="ios-search" type="primary" @click="isSearch">搜索</Button>
+      <Button slot="append" icon="ios-search" type="primary" @click="isSearch">搜索</Button>
       </Input>
     </div>
     <div class="row" v-if="data.length">
+      <div class="col-xs-12">
+        <h5 class="title">
+          <Badge :count="data.length">
+            <span class="demo-badge">第一部分</span>
+          </Badge>
+        </h5>
+      </div>
       <div class="col-sm-6 col-md-4 col-lg-3" v-for="x in 4">
-        <div class="img" v-for="(item, i) in data" v-if="i%4 === (x-1)">
-          <img v-lazy="item.img" alt="">
+        <div class="img" v-for="(item, i) in data" v-if="i%4 === (x-1)" v-lazy="item.img">
+          <img v-lazy="item.img" ref="img">
           <div class="operation">
             <div class="col-xs-4">{{item.imgsize}}</div>
             <div class="col-xs-4">{{item.imgtype}}</div>
@@ -21,9 +28,23 @@
         </div>
       </div>
     </div>
-    <div class="row" v-if="!data.length">
-      <div class="">
-        <img src="" alt="">
+    <div class="row" v-if="dataTwo.length">
+      <div class="col-xs-12">
+        <h5 class="title">
+          <Badge :count="dataTwo.length">
+            <span class="demo-badge">第二部分</span>
+          </Badge>
+        </h5>
+      </div>
+      <div class="col-sm-6 col-md-4 col-lg-3" v-for="x in 4">
+        <div class="img" v-for="(item, i) in dataTwo" v-if="i%4 === (x-1)" v-lazy="item.pic_url">
+          <img v-lazy="item.pic_url" ref="img">
+          <div class="operation">
+            <div class="col-xs-4">{{(item.size/1024/1024).toFixed(2) + 'M'}}</div>
+            <div class="col-xs-4 padding0">{{item.width + ' / ' + item.height}}</div>
+            <div class="col-xs-4"><a :href="item.pic_url" target="_blank">下载</a></div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="page">
@@ -42,7 +63,7 @@
     name: 'hello',
     data () {
       return {
-        input: '王者荣耀壁纸',
+        input: '阿拉丁DIM云平台',
         total: 0,
         columns: [{
           title: '图片',
@@ -58,9 +79,11 @@
           }
         }],
         data: [],
+        dataTwo: [],
         title: '',
         current: 1,
-        pageNum: 50
+        pageNum: 50,
+        images: []
       }
     },
     mounted () {
@@ -69,11 +92,22 @@
     methods: {
       isData () {
         this.data = []
+        this.dataTwo = []
         this.$Loading.start()
-        this.$http.get('/search?key=' + this.input + '&current=' + this.current + '&pageNum=' + this.pageNum, {}).then((req) => {
+        this.$http.get('/so?key=' + this.input + '&current=' + this.current + '&pageNum=' + this.pageNum, {}).then((req) => {
           if (req.body.code === '200') {
             this.data = req.body.list
             this.total = req.body.total
+            this.$Loading.finish()
+          } else {
+            this.$Loading.error()
+          }
+          console.log(req.body)
+        })
+        this.$http.get('/sogou?key=' + this.input + '&current=' + this.current + '&pageNum=' + this.pageNum, {}).then((req) => {
+          if (req.body.code === '200') {
+            this.dataTwo = req.body.items
+//            this.total = req.body.total
             this.$Loading.finish()
           } else {
             this.$Loading.error()
@@ -93,6 +127,14 @@
         this.pageNum = n
         this.current = 1
         this.isData()
+      },
+      isLoad () {
+        this.images = []
+        this.$refs.img.forEach((a, b) => {
+//          console.log(a, b)
+          this.images.push(a.getAttribute('lazy'))
+        })
+        console.log(this.images)
       }
     }
   }
@@ -100,6 +142,18 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+
+  .padding0 {
+    padding: 0;
+  }
+  .demo-badge{
+    padding: 0 20px;
+    height: 42px;
+    line-height: 42px;
+    background: #eee;
+    border-radius: 6px;
+    display: inline-block;
+  }
   .image {
     background-color: #000;
   }
@@ -135,6 +189,10 @@
     width: 100%;
   }
 
+  .img[lazy=error] {
+    display: none;
+  }
+
   .page {
     z-index: 99999;
     width: 100%;
@@ -143,7 +201,7 @@
     padding-bottom: 20px;
     background-color: #fff;
     /*border-top:1px solid #e9eaec;*/
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     left: 0;
     bottom: 0;
   }
@@ -152,15 +210,23 @@
     top: auto !important;
     bottom: 50px !important;
   }
+
   .operation {
     overflow: hidden;
     padding-top: 5px;
   }
+
   .operation .col-lg-4 {
     border-right: 1px solid #d6d6d6;
   }
+
   .operation .col-lg-4:last-child {
     border-right: 0;
+  }
+  .title {
+    text-align: left;
+    padding-bottom: 20px;
+    font-weight: bold;
   }
 
 </style>

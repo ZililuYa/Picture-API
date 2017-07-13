@@ -13,8 +13,7 @@ router.get('/', function (req, res, next) {
  * {pageNum} 显示多少条 ， 默认20
  * {current} 当前页 ， 默认1
  * */
-router.get('/search', function (req, res, next) {
-  //http://image.so.com/j?q=123&src=srp&correct=123&sn=0&pn=20&sid=25488ccd46a01e898920b5e4a5d369c6&ran=0&ras=0
+router.get('/so', function (req, res, next) {
   var key = req.query.key;
   var pageNum = req.query.pageNum || 20;
   var current = req.query.current || 1;
@@ -23,6 +22,61 @@ router.get('/search', function (req, res, next) {
     "method": "GET",
     "hostname": "image.so.com",
     "path": encodeURI("/j?q=" + key + "&src=srp&correct=" + key + "&sn=" + current + "&pn=" + pageNum + "&ran=0&ras=0")
+  };
+  if (!key) {
+    res.send({
+      code: '500',
+      msg: '没有关键字'
+    });
+    return;
+  }
+  var request = http.request(options, function (opt) {
+    var chunks = '';
+    opt.setEncoding('utf8');
+    opt.on("data", function (chunk) {
+      chunks += chunk;
+    });
+
+    opt.on("end", function () {
+      // var body = Buffer.concat(chunks);
+      var data = JSON.parse(chunks);
+      data.code = '200';
+      data.msg = '图片获取成功';
+      res.send(data);
+    });
+    opt.on('timeout',function(){
+      request.end();
+      res.send({
+        code: '500',
+        msg: '连接超时'
+      });
+    });
+  }).on('error', function (e) {
+    console.error(e);
+    res.send({
+      code: '500',
+      msg: '接口错误'
+    });
+  });
+  request.end();
+});
+
+/**
+ * 服务：sogou图片API
+ * {key} 关键字d
+ * {current} 当前页 ， 默认1
+ * */
+// sogou图片服务
+router.get('/sogou', function (req, res, next) {
+  var key = req.query.key;
+  var current = req.query.current || 1;
+  // var pageNum = req.query.pageNum || 20;
+  var pageNum = 48; // soso无法设置每页显示多少，默认48
+  current = current * pageNum - pageNum;
+  var options = {
+    "method": "GET",
+    "hostname": "pic.sogou.com",
+    "path": encodeURI("/pics?query=" + key + "&reqType=ajax&start=" + current)
   };
   if (!key) {
     res.send({
