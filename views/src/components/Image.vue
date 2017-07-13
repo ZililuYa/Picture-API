@@ -226,6 +226,26 @@
     display: none;
   }
 
+  .img[src*=".baidu.com"],
+  .img[src*=".bimg.126.net"],
+  .img[src*=".bdimg.com"],
+  .img[src*=".soso.com"],
+  .img[src*=".nipic.com"],
+  .img[src*=".taopic.com"],
+  .img[src*=".ivsky.com"],
+  .img[src*=".redocn.com"],
+  .img[src*=".3conline.com"],
+  .img[src*=".pconline.com.cn"],
+  .img[src*=".pcgames.com.cn"],
+  .img[src*=".cecb2b.com"],
+  .img[src*=".sinaimg.cn"],
+  .img[src*=".ik123.com"],
+  .img[src*=".qq.com"],
+  .img[src*=".cnhuadong.net"],
+  .img[src*=".tuzhan.com"]{
+    display: none;
+  }
+
   .page {
     z-index: 99999;
     width: 100%;
