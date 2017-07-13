@@ -4,7 +4,7 @@
       <h3>所有图片来源于互联网</h3>
       <br><br>
     </div>
-    <div class="">
+    <div :class="searchClass">
       <Input class="input" v-model="input" @keyup.enter.native="isSearch" placeholder="请输入关键字">
       <Button slot="append" icon="ios-search" type="primary" @click="isSearch">搜索</Button>
       </Input>
@@ -40,14 +40,14 @@
         <div class="img" v-for="(item, i) in dataTwo" v-if="i%4 === (x-1)" v-lazy="item.pic_url">
           <img v-lazy="item.pic_url" ref="img">
           <div class="operation">
-            <div class="col-xs-4">{{(item.size/1024/1024).toFixed(2) + 'M'}}</div>
+            <div class="col-xs-4">{{(item.size / 1024 / 1024).toFixed(2) + 'M'}}</div>
             <div class="col-xs-4 padding0">{{item.width + ' / ' + item.height}}</div>
             <div class="col-xs-4"><a :href="item.pic_url" target="_blank">下载</a></div>
           </div>
         </div>
       </div>
     </div>
-    <div class="page">
+    <div class="page" v-if="total">
       <div class="row">
         <Page :total="total" :page-size="pageNum" :current="current" size="small" @on-change="isChange"
               @on-page-size-change="isSizeChange"
@@ -63,7 +63,7 @@
     name: 'hello',
     data () {
       return {
-        input: '阿拉丁DIM云平台',
+        input: '',
         total: 0,
         columns: [{
           title: '图片',
@@ -83,13 +83,26 @@
         title: '',
         current: 1,
         pageNum: 50,
-        images: []
+        images: [],
+        searchClass: ''
       }
     },
     mounted () {
       this.isData()
+      this.handleScroll()
     },
     methods: {
+      handleScroll () {
+        let sllY = 0
+        window.onscroll = () => {
+          sllY = window.scrollY
+          if (sllY > 135) {
+            this.searchClass = 'searchClass'
+          } else {
+            this.searchClass = ''
+          }
+        }
+      },
       isData () {
         this.data = []
         this.dataTwo = []
@@ -143,10 +156,23 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 
+  .searchClass {
+    transition-duration: 0.5s;
+    position: fixed;
+    width: 100%;
+    left: 0;
+    top: 0;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 9999999;
+    padding: 10px 0;
+  }
+
   .padding0 {
     padding: 0 !important;
   }
-  .demo-badge{
+
+  .demo-badge {
     padding: 0 20px;
     height: 42px;
     line-height: 42px;
@@ -154,6 +180,7 @@
     border-radius: 6px;
     display: inline-block;
   }
+
   .image {
     background-color: #000;
   }
@@ -163,8 +190,14 @@
     margin: 0 auto;
   }
 
-  .row {
-    padding-top: 20px;
+  .input .ivu-input, .input .ivu-input-group-append {
+    border-radius: 0;
+  }
+
+  .input .ivu-input-group-append {
+    background-color: #2d8cf0;
+    color: #fff;
+    border: 1px solid #2d8cf0;
   }
 
   .container.hello {
@@ -198,7 +231,7 @@
     width: 100%;
     position: fixed;
     text-align: center;
-    padding-bottom: 20px;
+    padding:10px 0;
     background-color: #fff;
     /*border-top:1px solid #e9eaec;*/
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -211,18 +244,23 @@
     bottom: 50px !important;
   }
 
+  .page .ivu-page-item-active{
+    border-radius: 0 !important;
+  }
+
   .operation {
     overflow: hidden;
     padding-top: 5px;
   }
 
-  .operation .col-lg-4 {
+  .operation .col-xs-4 {
     border-right: 1px solid #d6d6d6;
   }
 
-  .operation .col-lg-4:last-child {
+  .operation .col-xs-4:last-child {
     border-right: 0;
   }
+
   .title {
     text-align: left;
     padding-bottom: 20px;
