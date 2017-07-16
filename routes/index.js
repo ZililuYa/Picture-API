@@ -2,11 +2,6 @@ var express = require('express');
 var http = require("http");
 var router = express.Router();
 
-/* GET home page. */
-router.get('/', function (req, res, next) {
-  res.render('index', {title: 'Express'});
-});
-
 /**
  * 服务：360图片API
  * {key} 关键字

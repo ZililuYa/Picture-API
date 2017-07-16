@@ -10,6 +10,7 @@ import VueResource from 'vue-resource'
 import VueLazyload from 'vue-lazyload'
 import loading from '@/assets/images/loading.gif'
 import error from '@/assets/images/error.jpg'
+import '@/assets/css/animate.min.css'
 // use options
 Vue.use(VueLazyload, {
   preLoad: 1.3,
