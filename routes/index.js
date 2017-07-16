@@ -33,11 +33,18 @@ router.get('/so', function (req, res, next) {
     });
 
     opt.on("end", function () {
-      // var body = Buffer.concat(chunks);
-      var data = JSON.parse(chunks);
-      data.code = '200';
-      data.msg = '图片获取成功';
-      res.send(data);
+      try {
+        // var body = Buffer.concat(chunks);
+        var data = JSON.parse(chunks);
+        data.code = '200';
+        data.msg = '图片获取成功';
+        res.send(data);
+      } catch (e) {
+        res.send({
+          code: '500',
+          msg: '出现异常'
+        });
+      }
     });
     opt.on('timeout', function () {
       request.end();
@@ -89,10 +96,17 @@ router.get('/sogou', function (req, res, next) {
 
     opt.on("end", function () {
       // var body = Buffer.concat(chunks);
-      var data = JSON.parse(chunks);
-      data.code = '200';
-      data.msg = '图片获取成功';
-      res.send(data);
+      try {
+        var data = JSON.parse(chunks);
+        data.code = '200';
+        data.msg = '图片获取成功';
+        res.send(data);
+      } catch (e) {
+        res.send({
+          code: '500',
+          msg: '出现异常'
+        });
+      }
     });
     opt.on('timeout', function () {
       request.end();
@@ -144,20 +158,27 @@ router.get('/yahoo', function (req, res, next) {
 
     opt.on("end", function () {
       // var body = Buffer.concat(chunks);
-      var data = JSON.parse(chunks);
-      var cheerio = require('cheerio');
-      var $ = cheerio.load(data.html);
-      data.items = [];
-      for (var i in $('#sres li')) {
-        let sres = $('#sres li').eq(i).attr('data');
-        if (sres && sres !== undefined) {
-          sres = JSON.parse(sres);
-          data.items.push(sres);
+      try {
+        var data = JSON.parse(chunks);
+        var cheerio = require('cheerio');
+        var $ = cheerio.load(data.html);
+        data.items = [];
+        for (var i in $('#sres li')) {
+          let sres = $('#sres li').eq(i).attr('data');
+          if (sres && sres !== undefined) {
+            sres = JSON.parse(sres);
+            data.items.push(sres);
+          }
         }
+        data.code = '200';
+        data.msg = '图片获取成功';
+        res.send(data);
+      } catch (e) {
+        res.send({
+          code: '500',
+          msg: '出现异常'
+        });
       }
-      data.code = '200';
-      data.msg = '图片获取成功';
-      res.send(data);
     });
     opt.on('timeout', function () {
       request.end();
