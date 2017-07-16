@@ -1,11 +1,13 @@
 <template>
   <div class="hello container">
+    <div class="none" v-title>搜图 - 小章鱼🐙</div>
     <div class="row ">
-      <h3>所有图片来源于互联网</h3>
+      <!--<h3>所有图片来源于互联网</h3>-->
+      <img :src="logo" alt="" style="width: 75px">
       <br><br>
     </div>
     <div :class="searchClass">
-      <Input class="input" v-model="input" @keyup.enter.native="isSearch" placeholder="请输入关键字">
+      <Input class="input" v-model="input" @keyup.enter.native="isSearch" placeholder="所有图片来源于互联网">
       <Button slot="append" icon="ios-search" type="primary" @click="isSearch">搜索</Button>
       </Input>
     </div>
@@ -13,7 +15,7 @@
       <div class="col-xs-12">
         <h5 class="title">
           <Badge :count="data.length">
-            <span class="demo-badge">第一部分</span>
+            <span class="demo-badge">第一触角</span>
           </Badge>
         </h5>
       </div>
@@ -32,7 +34,7 @@
       <div class="col-xs-12">
         <h5 class="title">
           <Badge :count="dataTwo.length">
-            <span class="demo-badge">第二部分</span>
+            <span class="demo-badge">第二触角</span>
           </Badge>
         </h5>
       </div>
@@ -47,6 +49,25 @@
         </div>
       </div>
     </div>
+    <div class="row" v-if="dataThree.length">
+      <div class="col-xs-12">
+        <h5 class="title">
+          <Badge :count="dataThree.length">
+            <span class="demo-badge">第三触角</span>
+          </Badge>
+        </h5>
+      </div>
+      <div class="col-sm-6 col-md-4 col-lg-3" v-for="x in 4">
+        <div class="img" v-for="(item, i) in dataThree" v-if="i%4 === (x-1)" v-lazy="item.iurl">
+          <img v-lazy="item.iurl" ref="img">
+          <div class="operation">
+            <div class="col-xs-4">{{item.s}}</div>
+            <div class="col-xs-4 padding0">{{item.w + ' / ' + item.h}}</div>
+            <div class="col-xs-4"><a :href="item.iurl" target="_blank">下载</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="page" v-if="total">
       <div class="row">
         <Page :total="total" :page-size="pageNum" :current="current" size="small" @on-change="isChange"
@@ -55,14 +76,17 @@
               show-elevator show-sizer></Page>
       </div>
     </div>
+    <div ref="html"></div>
   </div>
 </template>
 
 <script>
+  import logo from '@/assets/logo.png'
   export default {
     name: 'hello',
     data () {
       return {
+        logo,
         input: '',
         total: 0,
         columns: [{
@@ -80,6 +104,7 @@
         }],
         data: [],
         dataTwo: [],
+        dataThree: [],
         title: '',
         current: 1,
         pageNum: 50,
@@ -106,6 +131,7 @@
       isData () {
         this.data = []
         this.dataTwo = []
+        this.dataThree = []
         this.$Loading.start()
         this.$http.get('/so?key=' + this.input + '&current=' + this.current + '&pageNum=' + this.pageNum, {}).then((req) => {
           if (req.body.code === '200') {
@@ -121,6 +147,16 @@
           if (req.body.code === '200') {
             this.dataTwo = req.body.items
 //            this.total = req.body.total
+            this.$Loading.finish()
+          } else {
+            this.$Loading.error()
+          }
+          console.log(req.body)
+        })
+        this.$http.get('/yahoo?key=' + this.input + '&current=' + this.current + '&pageNum=' + this.pageNum, {}).then((req) => {
+          if (req.body.code === '200') {
+            this.dataThree = req.body.items
+//            this.dataTwo = req.body.items
             this.$Loading.finish()
           } else {
             this.$Loading.error()
@@ -156,6 +192,10 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 
+  .none {
+    display: none;
+  }
+
   .searchClass {
     transition-duration: 0.5s;
     position: fixed;
@@ -174,11 +214,12 @@
 
   .demo-badge {
     padding: 0 20px;
-    height: 42px;
-    line-height: 42px;
+    height: 30px;
+    line-height: 30px;
     background: #eee;
     border-radius: 6px;
     display: inline-block;
+    font-size: 12px;
   }
 
   .image {
@@ -235,6 +276,7 @@
   .img[src*=".ivsky.com"],
   .img[src*=".redocn.com"],
   .img[src*=".3conline.com"],
+  .img[src*=".126.net"],
   .img[src*=".pconline.com.cn"],
   .img[src*=".pcgames.com.cn"],
   .img[src*=".cecb2b.com"],
@@ -242,7 +284,7 @@
   .img[src*=".ik123.com"],
   .img[src*=".qq.com"],
   .img[src*=".cnhuadong.net"],
-  .img[src*=".tuzhan.com"]{
+  .img[src*=".tuzhan.com"] {
     display: none;
   }
 
@@ -251,7 +293,7 @@
     width: 100%;
     position: fixed;
     text-align: center;
-    padding:10px 0;
+    padding: 10px 0;
     background-color: #fff;
     /*border-top:1px solid #e9eaec;*/
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -264,7 +306,7 @@
     bottom: 50px !important;
   }
 
-  .page .ivu-page-item-active{
+  .page .ivu-page-item-active {
     border-radius: 0 !important;
   }
 

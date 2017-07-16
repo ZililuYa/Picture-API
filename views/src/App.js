@@ -31,6 +31,10 @@ router.afterEach((to, from, next) => {
   iView.LoadingBar.finish()
 })
 
+Vue.directive('title', function (el, binding) {
+  document.title = el.innerHTML
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
