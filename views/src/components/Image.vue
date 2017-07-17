@@ -1,9 +1,10 @@
 <template>
   <div class="image container">
-    <div class="none" v-title>搜图 - 小章鱼</div>
+    <div class="none" v-title>图片 - 小章鱼</div>
     <div class="row ">
       <!--<h3>所有图片来源于互联网</h3>-->
-      <img :src="logo" alt="" style="width: 75px">
+      <img :src="logoSvg" alt="" style="width: 75px">
+      <!--<div id="logo" class="logo"></div>-->
       <br><br>
     </div>
     <div :class="searchClass">
@@ -81,26 +82,15 @@
 
 <script>
   import logo from '@/assets/logo.png'
+  import logoSvg from '@/assets/images/logo.svg'
   export default {
     name: 'hello',
     data () {
       return {
         logo,
+        logoSvg,
         input: '',
         total: 0,
-        columns: [{
-          title: '图片',
-          key: 'img',
-          render: (h, params) => {
-            return h('div', [
-              h('img', {
-                attrs: {
-                  src: params.row.img
-                }
-              })
-            ])
-          }
-        }],
         data: [],
         dataTwo: [],
         dataThree: [],
@@ -132,7 +122,7 @@
         this.dataTwo = []
         this.dataThree = []
         this.$Loading.start()
-        this.$http.get('/so?key=' + this.input + '&current=' + this.current + '&pageNum=' + this.pageNum, {}).then((req) => {
+        this.$http.get('/image/so?key=' + this.input + '&current=' + this.current + '&pageNum=' + this.pageNum, {}).then((req) => {
           if (req.body.code === '200') {
             this.data = req.body.list
             this.total = req.body.total
@@ -142,7 +132,7 @@
           }
           console.log(req.body)
         })
-        this.$http.get('/sogou?key=' + this.input + '&current=' + this.current + '&pageNum=' + this.pageNum, {}).then((req) => {
+        this.$http.get('/image/sogou?key=' + this.input + '&current=' + this.current + '&pageNum=' + this.pageNum, {}).then((req) => {
           if (req.body.code === '200') {
             this.dataTwo = req.body.items
 //            this.total = req.body.total
@@ -152,7 +142,7 @@
           }
           console.log(req.body)
         })
-        this.$http.get('/yahoo?key=' + this.input + '&current=' + this.current + '&pageNum=' + this.pageNum, {}).then((req) => {
+        this.$http.get('/image/yahoo?key=' + this.input + '&current=' + this.current + '&pageNum=' + this.pageNum, {}).then((req) => {
           if (req.body.code === '200') {
             this.dataThree = req.body.items
 //            this.dataTwo = req.body.items
@@ -188,3 +178,9 @@
   }
 </script>
 
+<style>
+  .logo {
+    width: 75px;
+    margin: 0 auto;
+  }
+</style>

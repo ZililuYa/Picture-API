@@ -8,7 +8,7 @@
     </div>
     <div :class="searchClass">
       <Input class="input" v-model="input" @keyup.enter.native="isSearch" placeholder="所有资源来源于互联网">
-      <Button slot="append" icon="ios-search" type="success" @click="isSearch">搜索树苗</Button>
+      <Button slot="append" icon="ios-search" type="success" @click="isSearch">搜索哈希</Button>
       </Input>
     </div>
   </div>

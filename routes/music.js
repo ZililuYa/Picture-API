@@ -12,12 +12,14 @@ router.get('/search', function (req, res, next) {
   var key = req.query.key;
   var pageNum = req.query.pageNum || 20;
   var current = req.query.current || 1;
-  current = current * pageNum - pageNum;
+  // current = current * pageNum - pageNum;
   // https://api.ziyuanmao.com/search/common
+  let qq = 0;
+  let url = `/fcgi-bin/music_search_new_platform?t=0&n=${pageNum}&aggr=1&cr=1&loginUin=${qq}&format=json&inCharset=GB2312&outCharset=utf-8&notice=0&platform=jqminiframe.json&needNewCode=0&p=${current}&catZhida=0&remoteplace=sizer.newclient.next_song&w=${key}`;
   var options = {
-    "method": "POST",
-    "hostname": "api.ziyuanmao.com",
-    "path": encodeURI("/search/common&ul=zh-cn&de=UTF-8&dt=资源猫 磁力搜索引擎 种子搜索神器网页版 番号搜索神器 网页版 种子搜索网站 网盘搜索神器 百度网盘搜索&sd=24-bit&sr=1366x768&vp=1366x638&je=0&fl=25.0 r0&ec=Search&ea=search&el=钢铁侠&_u=CACAAEABI~&jid=&gjid=&cid=909967149.1500193702&tid=UA-85209037-1&_gid=253073475.1500193702&z=712780331")
+    "method": "GET",
+    "hostname": "s.music.qq.com",
+    "path": encodeURI(url)
   };
   if (!key) {
     res.send({
@@ -34,11 +36,10 @@ router.get('/search', function (req, res, next) {
     });
 
     opt.on("end", function () {
-      // var data = JSON.parse(chunks);
-      // data.code = '200';
-      // data.msg = '图片获取成功';
-      console.log(chunks);
-      res.send(chunks);
+      var data = JSON.parse(chunks);
+      data.code = '200';
+      data.msg = '歌曲获取成功';
+      res.send(data);
     });
     opt.on('timeout', function () {
       request.end();
