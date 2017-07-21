@@ -2,8 +2,7 @@
   <div class="music container">
     <div class="none" v-title>音乐 - 小章鱼</div>
     <div class="row ">
-      <!--<h3>所有图片来源于互联网</h3>-->
-      <img :src="logo" alt="" style="width: 75px">
+      <object :data="logo" alt="" style="width: 75px"></object>
       <br><br>
     </div>
     <div :class="searchClass">
@@ -33,9 +32,9 @@
 </template>
 
 <script>
-  import logo from '@/assets/logo.png'
+  import logo from '@/assets/images/logo.svg'
   import APlayer from 'aplayer'
-//  import $ from 'jquery'
+  //  import $ from 'jquery'
 
   export default {
     name: 'hello',
@@ -153,15 +152,24 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
+  .loop(@counter) when (@counter > 0) {
+    .loop((@counter - 1));
+    .song {
+      &:nth-child(@{counter}) {
+        animation-delay: @counter / 5 - 0.2s;
+      }
+    }
+  }
+
   .music {
     .aplayer {
       position: fixed;
-      right: -500 + 30px;
-      bottom: 300px;
-      min-width: 500px;
+      right: -300 + 61px;
+      bottom: 200px;
+      min-width: 300px;
       background-color: #fff;
       transition-duration: 1s;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
       &:hover {
         right: 0;
       }
@@ -184,5 +192,6 @@
         }
       }
     }
+    .loop(30)
   }
 </style>

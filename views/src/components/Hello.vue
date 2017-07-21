@@ -2,8 +2,7 @@
   <div class="container">
     <div class="none" v-title>小章鱼</div>
     <div class="row">
-      <object :data="logo" style="width: 100px">
-      </object>
+      <object :data="logo" style="width: 100px"></object>
       <br><br>
     </div>
     <div class="row">

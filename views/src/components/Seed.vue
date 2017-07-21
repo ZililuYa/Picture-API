@@ -3,7 +3,7 @@
     <div class="none" v-title>树苗 - 小章鱼</div>
     <div class="row ">
       <!--<h3>所有图片来源于互联网</h3>-->
-      <img :src="logo" alt="" style="width: 75px">
+      <object :data="logo" alt="" style="width: 75px"></object>
       <br><br>
     </div>
     <div :class="searchClass">
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-  import logo from '@/assets/logo.png'
+  import logo from '@/assets/images/logo.svg'
   export default {
     name: 'hello',
     data () {

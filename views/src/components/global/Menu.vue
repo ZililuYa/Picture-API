@@ -2,6 +2,7 @@
   <div :class="className" id="menu">
     <div class="li animated fadeInRight" @click="pathFun(item.path)" v-for="item in data">{{item.name}}</div>
   </div>
+
 </template>
 
 <script>

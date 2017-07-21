@@ -3,6 +3,9 @@
     <MenuPage ref="menu"></MenuPage>
     <router-view></router-view>
     <Back-top :bottom="100"></Back-top>
+    <a class="drag-menu" @click="menuFun">
+      <Icon type="drag"></Icon>
+    </a>
   </div>
 </template>
 
@@ -18,6 +21,7 @@
     },
     mounted () {
       this.keyUp()
+      console.clear()
     },
     methods: {
       keyUp () {
@@ -29,7 +33,6 @@
         }
       },
       menuFun () {
-        console.log('操作菜单！')
         this.$refs.menu.open()
       }
     }

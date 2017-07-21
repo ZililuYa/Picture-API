@@ -2,9 +2,7 @@
   <div class="image container">
     <div class="none" v-title>图片 - 小章鱼</div>
     <div class="row ">
-      <!--<h3>所有图片来源于互联网</h3>-->
-      <img :src="logoSvg" alt="" style="width: 75px">
-      <!--<div id="logo" class="logo"></div>-->
+      <object :data="logo" alt="" style="width: 75px"></object>
       <br><br>
     </div>
     <div :class="searchClass">
@@ -18,9 +16,10 @@
           <Badge :count="data.length">
             <span class="demo-badge">第一触角</span>
           </Badge>
+          <a class="right" @click="shrink1 = !shrink1">{{shrink1?'收起':'展开'}}</a>
         </h5>
       </div>
-      <div class="col-sm-6 col-md-4 col-lg-3" v-for="x in 4">
+      <div class="col-sm-6 col-md-4 col-lg-3" v-for="x in 4" v-show="shrink1">
         <div class="img" v-for="(item, i) in data" v-if="i%4 === (x-1)" v-lazy="item.img">
           <img v-lazy="item.img" ref="img">
           <div class="operation">
@@ -37,10 +36,11 @@
           <Badge :count="dataTwo.length">
             <span class="demo-badge">第二触角</span>
           </Badge>
+          <a class="right" @click="shrink2 = !shrink2">{{shrink2?'收起':'展开'}}</a>
         </h5>
       </div>
-      <div class="col-sm-6 col-md-4 col-lg-3" v-for="x in 4">
-        <div class="img" v-for="(item, i) in dataTwo" v-if="i%4 === (x-1)" v-lazy="item.pic_url">
+      <div class="col-sm-6 col-md-4 col-lg-3" v-for="x in 4" v-show="shrink2">
+        <div class="img" v-for="(item, i) in dataTwo" v-if="i%4 === (x-1)" v-lazy="item.pic_url" >
           <img v-lazy="item.pic_url" ref="img">
           <div class="operation">
             <div class="col-xs-4">{{(item.size / 1024 / 1024).toFixed(2) + 'M'}}</div>
@@ -56,15 +56,36 @@
           <Badge :count="dataThree.length">
             <span class="demo-badge">第三触角</span>
           </Badge>
+          <a class="right" @click="shrink3 = !shrink3">{{shrink3?'收起':'展开'}}</a>
         </h5>
       </div>
-      <div class="col-sm-6 col-md-4 col-lg-3" v-for="x in 4">
+      <div class="col-sm-6 col-md-4 col-lg-3" v-for="x in 4" v-show="shrink3">
         <div class="img" v-for="(item, i) in dataThree" v-if="i%4 === (x-1)" v-lazy="item.iurl">
           <img v-lazy="item.iurl" ref="img">
           <div class="operation">
             <div class="col-xs-4">{{item.s}}</div>
             <div class="col-xs-4 padding0">{{item.w + ' / ' + item.h}}</div>
             <div class="col-xs-4"><a :href="item.iurl" target="_blank">下载</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" v-if="dataFour.length">
+      <div class="col-xs-12">
+        <h5 class="title">
+          <Badge :count="dataFour.length">
+            <span class="demo-badge">第四触角</span>
+          </Badge>
+          <a class="right" @click="shrink4 = !shrink4">{{shrink4?'收起':'展开'}}</a>
+        </h5>
+      </div>
+      <div class="col-sm-6 col-md-4 col-lg-3" v-for="x in 4" v-show="shrink4">
+        <div class="img" v-for="(item, i) in dataFour" v-if="i%4 === (x-1)" v-lazy="item.murl">
+          <img v-lazy="item.murl" ref="img">
+          <div class="operation">
+            <div class="col-xs-4"></div>
+            <div class="col-xs-4 padding0"></div>
+            <div class="col-xs-4"><a :href="item.murl" target="_blank">下载</a></div>
           </div>
         </div>
       </div>
@@ -81,19 +102,22 @@
 </template>
 
 <script>
-  import logo from '@/assets/logo.png'
-  import logoSvg from '@/assets/images/logo.svg'
+  import logo from '@/assets/images/logo.svg'
   export default {
     name: 'hello',
     data () {
       return {
         logo,
-        logoSvg,
         input: '',
         total: 0,
+        shrink1: true,
+        shrink2: true,
+        shrink3: true,
+        shrink4: true,
         data: [],
         dataTwo: [],
         dataThree: [],
+        dataFour: [],
         title: '',
         current: 1,
         pageNum: 50,
@@ -117,6 +141,9 @@
           }
         }
       },
+      shrinkFun (i) {
+        this.shrink[i] = !this.shrink[i]
+      },
       isData () {
         this.data = []
         this.dataTwo = []
@@ -135,7 +162,6 @@
         this.$http.get('/image/sogou?key=' + this.input + '&current=' + this.current + '&pageNum=' + this.pageNum, {}).then((req) => {
           if (req.body.code === '200') {
             this.dataTwo = req.body.items
-//            this.total = req.body.total
             this.$Loading.finish()
           } else {
             this.$Loading.error()
@@ -145,7 +171,15 @@
         this.$http.get('/image/yahoo?key=' + this.input + '&current=' + this.current + '&pageNum=' + this.pageNum, {}).then((req) => {
           if (req.body.code === '200') {
             this.dataThree = req.body.items
-//            this.dataTwo = req.body.items
+            this.$Loading.finish()
+          } else {
+            this.$Loading.error()
+          }
+          console.log(req.body)
+        })
+        this.$http.get('/image/bing?key=' + this.input + '&current=' + this.current + '&pageNum=' + this.pageNum, {}).then((req) => {
+          if (req.body.code === '200') {
+            this.dataFour = req.body.list
             this.$Loading.finish()
           } else {
             this.$Loading.error()
