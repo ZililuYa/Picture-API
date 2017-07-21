@@ -19,7 +19,7 @@
           <a class="right" @click="shrink1 = !shrink1">{{shrink1?'收起':'展开'}}</a>
         </h5>
       </div>
-      <div class="col-sm-6 col-md-4 col-lg-3" v-for="x in 4" v-show="shrink1">
+      <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" v-for="x in 4" v-show="shrink1">
         <div class="img" v-for="(item, i) in data" v-if="i%4 === (x-1)" v-lazy="item.img">
           <img v-lazy="item.img" ref="img">
           <div class="operation">
@@ -39,7 +39,7 @@
           <a class="right" @click="shrink2 = !shrink2">{{shrink2?'收起':'展开'}}</a>
         </h5>
       </div>
-      <div class="col-sm-6 col-md-4 col-lg-3" v-for="x in 4" v-show="shrink2">
+      <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" v-for="x in 4" v-show="shrink2">
         <div class="img" v-for="(item, i) in dataTwo" v-if="i%4 === (x-1)" v-lazy="item.pic_url" >
           <img v-lazy="item.pic_url" ref="img">
           <div class="operation">
@@ -59,7 +59,7 @@
           <a class="right" @click="shrink3 = !shrink3">{{shrink3?'收起':'展开'}}</a>
         </h5>
       </div>
-      <div class="col-sm-6 col-md-4 col-lg-3" v-for="x in 4" v-show="shrink3">
+      <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" v-for="x in 4" v-show="shrink3">
         <div class="img" v-for="(item, i) in dataThree" v-if="i%4 === (x-1)" v-lazy="item.iurl">
           <img v-lazy="item.iurl" ref="img">
           <div class="operation">
@@ -79,7 +79,7 @@
           <a class="right" @click="shrink4 = !shrink4">{{shrink4?'收起':'展开'}}</a>
         </h5>
       </div>
-      <div class="col-sm-6 col-md-4 col-lg-3" v-for="x in 4" v-show="shrink4">
+      <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" v-for="x in 4" v-show="shrink4">
         <div class="img" v-for="(item, i) in dataFour" v-if="i%4 === (x-1)" v-lazy="item.murl">
           <img v-lazy="item.murl" ref="img">
           <div class="operation">

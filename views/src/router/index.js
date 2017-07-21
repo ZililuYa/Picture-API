@@ -4,6 +4,7 @@ import Hello from '@/components/Hello.vue'
 import Image from '@/components/Image.vue'
 import Music from '@/components/Music.vue'
 import Seed from '@/components/Seed.vue'
+import Video from '@/components/Video.vue'
 
 Vue.use(Router)
 
@@ -28,6 +29,11 @@ export default new Router({
       path: '/music',
       name: 'Music',
       component: Music
+    },
+    {
+      path: '/video',
+      name: 'Video',
+      component: Video
     }
   ]
 })

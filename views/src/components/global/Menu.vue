@@ -25,9 +25,9 @@
           cn: '',
           path: '/music'
         }, {
-          name: '...',
+          name: '视频',
           cn: '',
-          path: ''
+          path: '/video'
         }],
         isf: true
       }

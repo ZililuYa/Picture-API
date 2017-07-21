@@ -10,6 +10,7 @@ var image = require('./routes/image');
 var seed = require('./routes/seed');
 var music = require('./routes/music');
 var users = require('./routes/users');
+var video = require('./routes/video');
 
 var app = express();
 
@@ -30,6 +31,7 @@ app.use('/image', image);
 app.use('/seed', seed);
 app.use('/music', music);
 app.use('/users', users);
+app.use('/video', video);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -46,7 +48,8 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  // res.render('error');
+  res.redirect('/');
 });
 
 module.exports = app;
