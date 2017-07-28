@@ -1,6 +1,7 @@
 var express = require('express');
 var http = require("http");
 var router = express.Router();
+var cheerio = require('cheerio');
 
 /**
  * 服务：seed
@@ -15,9 +16,9 @@ router.get('/search', function (req, res, next) {
   current = current * pageNum - pageNum;
   // https://api.ziyuanmao.com/search/common
   var options = {
-    "method": "POST",
-    "hostname": "api.ziyuanmao.com",
-    "path": encodeURI("/search/common&ul=zh-cn&de=UTF-8&dt=资源猫 磁力搜索引擎 种子搜索神器网页版 番号搜索神器 网页版 种子搜索网站 网盘搜索神器 百度网盘搜索&sd=24-bit&sr=1366x768&vp=1366x638&je=0&fl=25.0 r0&ec=Search&ea=search&el=钢铁侠&_u=CACAAEABI~&jid=&gjid=&cid=909967149.1500193702&tid=UA-85209037-1&_gid=253073475.1500193702&z=712780331")
+    "method": "GET",
+    "hostname": "www.btcherry.info",
+    "path": encodeURI("/search?keyword=" + key + "&p=" + current)
   };
   if (!key) {
     res.send({
@@ -35,10 +36,32 @@ router.get('/search', function (req, res, next) {
 
     opt.on("end", function () {
       // var data = JSON.parse(chunks);
-      // data.code = '200';
-      // data.msg = '图片获取成功';
-      console.log(chunks);
-      res.send(chunks);
+
+      var $ = cheerio.load(chunks);
+      var data = {
+        total: $('#content .costs').html()
+      };
+      // data.total = parseInt(data.total)
+      // console.log(data.total.split('&#x6761;')[0].split('&#x5230;')[1], data.total)
+      data.total = data.total.split('&#x6761;')[0].split('&#x5230;')[1];
+      data.items = [];
+      for (var i in $('#content .r')) {
+        var sres = {
+          html: $('#content .r').eq(i).html(),
+          name: $('#content .r .h').eq(i).text(),
+          time: $('#content .r').eq(i).find('.prop_val').eq(0).html(),
+          size: $('#content .r').eq(i).find('.prop_val').eq(1).html(),
+          fileNum: $('#content .r').eq(i).find('.prop_val').eq(2).html(),
+          magnet: $('#content .r').eq(i).find('a').eq(1).attr('href')
+        }
+        if (sres.html && sres.name) {
+          data.items.push(sres);
+        }
+      }
+      // console.log(data);
+      data.code = '200';
+      data.msg = '哈希获取成功';
+      res.send(data);
     });
     opt.on('timeout', function () {
       request.end();

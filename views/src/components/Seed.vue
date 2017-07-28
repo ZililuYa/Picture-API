@@ -7,9 +7,25 @@
       <br><br>
     </div>
     <div :class="searchClass">
-      <Input class="input" v-model="input" @keyup.enter.native="isSearch" placeholder="所有资源来源于互联网">
-      <Button slot="append" icon="ios-search" type="success" @click="isSearch">搜索哈希</Button>
+      <Input class="input" v-model="input" @keyup.enter.native="isSearch" placeholder="所有数据来源于互联网">
+      <Button slot="append" icon="ios-search" class="" type="success" @click="isSearch">搜索哈希</Button>
       </Input>
+    </div>
+    <div class="row items">
+      <div class="item" v-for="item in data">
+        {{item.name}}
+        <div class="btnDiv">
+          <span class="a">时间：{{item.time}}</span>
+          <span class="a">大小：{{item.size}}</span>
+          <span class="a">文件数：{{item.fileNum}}</span>
+          <a :href="item.magnet" target="_blank" class="a">Hash</a>
+        </div>
+      </div>
+    </div>
+    <div class="page" v-if="data.length">
+      <div class="row">
+        <Page :total="total" :page-size="pageNum" :current="current" size="small" @on-change="isChange"></Page>
+      </div>
     </div>
   </div>
 </template>
@@ -49,8 +65,17 @@
       },
       isData () {
         this.data = []
-        this.dataTwo = []
-        this.dataThree = []
+        this.$Loading.start()
+        this.$http.get('/seed/search?key=' + this.input + '&current=' + this.current + '&pageNum=' + this.pageNum, {}).then((req) => {
+          if (req.body.code === '200') {
+            this.data = req.body.items
+            this.total = parseInt(req.body.total)
+            this.$Loading.finish()
+          } else {
+            this.$Loading.error()
+          }
+          console.log(req.body)
+        })
       },
       isSearch () {
         this.current = 1
