@@ -17,7 +17,7 @@ router.get('/search', function (req, res, next) {
   // https://api.ziyuanmao.com/search/common
   var options = {
     "method": "GET",
-    "hostname": "www.btcherry.info",
+    "hostname": "www.btcerise.com",
     "path": encodeURI("/search?keyword=" + key + "&p=" + current)
   };
   if (!key) {
