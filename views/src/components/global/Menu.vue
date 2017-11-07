@@ -17,22 +17,26 @@
           cn: '',
           path: '/image'
         }, {
-          name: '哈希',
-          cn: '',
-          path: '/seed'
-        }, {
+//          name: '哈希',
+//          cn: '',
+//          path: '/seed'
+//        }, {
           name: '音乐',
           cn: '',
           path: '/music'
-        }, {
-          name: '视频',
-          cn: '',
-          path: '/video'
-        }],
+        }
+//        }, {
+//          name: '视频',
+//          cn: '',
+//          path: '/video'
+//        }
+        ],
         isf: true
       }
     },
     mounted () {
+      let size = $('#menu .li').length
+      $('#menu .li').width((100 / size) + '%')
     },
     methods: {
       open () {

@@ -11,21 +11,30 @@
       </Input>
     </div>
     <div class="row">
-      <div class="song animated fadeInUp" v-for="item in data">
-        {{ item.fsinger }} - {{ item.fsong }}
-        <div class="btndiv">
-          {{ }}
-          <a @click="isPlay(item.f.split('|'))">播放</a>
-          <a>下载</a>
-        </div>
-      </div>
-    </div>
-    <div class="page" v-if="total">
-      <div class="row">
-        <Page :total="total" :page-size="pageNum" :current="current" size="small" @on-change="isChange"
-              @on-page-size-change="isSizeChange"
-              :page-size-opts="[20, 40, 60, 80]"></Page>
-      </div>
+      <br>
+      <br>
+      <Tabs type="card" @on-click="tabClick">
+        <TabPane v-for="m in menu" :key="m.name" :label="m.label" :name="m.name">
+          <div class="demo-spin-container" v-show="loading">
+            <Spin fix></Spin>
+          </div>
+          <div class="div music_div" v-show="!loading" v-for="i in data[m.name]">
+            <img :src="i.album.coverBig" class="fm" alt="">
+            <Tooltip :content="'收录在专辑《 ' + i.album.name + ' 》'" placement="top">
+              <span class="music_span">{{i.name}} - {{i.artists[0].name}}</span>
+            </Tooltip>
+            <div class="fr">
+              <Button type="info" size="small" @click="isPlay(i)">播放</Button>
+              <Button type="text" size="small" @click="isDownload">下载</Button>
+            </div>
+          </div>
+          <div class="row" v-if="data[m.name + '_total']">
+            <br>
+            <br>
+            <Page :total="data[m.name + '_total']" :page-size="pageNum" :current="data[m.name + '_current']" show-total @on-change="isChange"></Page>
+          </div>
+        </TabPane>
+      </Tabs>
     </div>
     <div id="player" class="aplayer"></div>
   </div>
@@ -40,45 +49,49 @@
     name: 'hello',
     data () {
       return {
+        loading: false,
+        name: 'netease',
+        menu: [{
+          label: '网易云音乐',
+          name: 'netease'
+        }, {
+          label: '虾米',
+          name: 'xiami'
+        }, {
+          label: 'QQ音乐',
+          name: 'qq'
+        }],
         logo,
         input: '',
-        total: 0,
-        data: [],
+        data: {
+          netease: [],
+          xiami: [],
+          qq: [],
+          xiami_total: 0,
+          xiami_current: 1,
+          netease_total: 0,
+          netease_current: 1,
+          qq_total: 0,
+          qq_current: 1
+        },
         title: '',
-        current: 1,
         pageNum: 20,
         images: [],
         searchClass: '',
         key: '',
-        sip: ''
+        sip: '',
+        url: ''
       }
     },
     mounted () {
-      this.isData()
+//      this.isData()
       this.handleScroll()
-//      $.ajax({
-//        async: false,
-//        url: 'http://base.music.qq.com/fcgi-bin/fcg_musicexpress.fcg?json=3&loginUin=0&format=jsonp&inCharset=GB2312&outCharset=GB2312&notice=0&platform=yqq&needNewCode=0',
-//        type: 'GET',
-//        dataType: 'jsonp',
-//        jsonp: 'callback',
-//        jsonpCallback: 'jsonCallback',
-//        timeout: 5000,
-//        beforeSend: function () {
-//        },
-//        success: (json) => {
-//          console.log('KEY:', json)
-//          this.key = json.key
-//          this.sip = json.sip
-//        },
-//        complete: function (XMLHttpRequest, textStatus) {
-//        },
-//        error: function (xhr) {
-//          alert('请求出错(请检查相关度网络状况.)')
-//        }
-//      })
     },
     methods: {
+      isDownload () {
+        if (this.url) window.open(this.url)
+        if (!this.url) this.$Message.info('请您先播放')
+      },
       handleScroll () {
         let sllY = 0
         window.onscroll = () => {
@@ -90,61 +103,59 @@
           }
         }
       },
-      isData () {
-        this.data = []
-        this.$http.get(`/music/search?key=${this.input}&current=${this.current}`).then((req) => {
+      tabClick (name) {
+        this.name = name
+      },
+      isData (vendor) {
+        this.loading = true
+        this.$http.get(`/music/search?key=${this.input}&current=${this.data[vendor + '_current']}&vendor=${vendor}`).then((req) => {
           if (req.body.code === '200') {
-            this.data = req.body.data.song.list
-            this.total = req.body.data.song.totalnum
+            this.data[vendor] = req.body.songList
+            this.data[vendor + '_total'] = req.body.total
           } else {
             this.$Loading.error()
           }
+          this.loading = false
           console.log(req.body)
         })
       },
       isSearch () {
-        this.current = 1
-        this.isData()
+        this.data['netease_current'] = 1
+        this.data['xiami_current'] = 1
+        this.data['qq_current'] = 1
+        this.isData('netease')
+        this.isData('xiami')
+        this.isData('qq')
       },
       isChange (n) {
-        this.current = n
-        this.isData()
-      },
-      isSizeChange (n) {
-        this.pageNum = n
-        this.current = 1
-        this.isData()
-      },
-      isLoad () {
-        this.images = []
-        this.$refs.img.forEach((a, b) => {
-//          console.log(a, b)
-          this.images.push(a.getAttribute('lazy'))
-        })
-        console.log(this.images)
+        this.data[this.name + '_current'] = n
+        this.isData(this.name)
       },
       isPlay (arr) {
-//        console.log(arr)
-        let lrc = `http://music.qq.com/miniportal/static/lyric/${arr[0] % 100}/${arr[0]}.xml`
-        console.log('歌词：', lrc)
-        var ap1 = new APlayer({
-          element: document.getElementById('player'),
-          narrow: false,
-          autoplay: true,
-          showlrc: false,
-          mutex: true,
-          theme: '#e6d0b2',
-          preload: 'metadata',
-          mode: 'circulation',
-          music: {
-            title: arr[1],
-            author: arr[3],
-//            lrc: lrc,
-            url: `http://ws.stream.qqmusic.qq.com/${arr[0]}.m4a?fromtag=46`,
-            pic: `http://imgcache.qq.com/music/photo/mid_album_90/${arr[22].split('')[12]}/${arr[22].split('')[13]}/${arr[22]}.jpg`
-          }
+        this.$http.get(`/music/getSong?id=${arr.id}&vendor=${this.name}`).then((req) => {
+          console.log(req.body)
+          callback(req.body)
         })
-        console.log(ap1)
+        let callback = (item) => {
+          this.url = item.url
+          var ap1 = new APlayer({
+            element: document.getElementById('player'),
+            narrow: false,
+            autoplay: true,
+            showlrc: false,
+            mutex: true,
+            theme: '#e6d0b2',
+            preload: 'metadata',
+            mode: 'circulation',
+            music: {
+              title: arr.name,
+              author: arr.artists[0].name,
+              url: item.url,
+              pic: arr.album.coverBig
+            }
+          })
+          console.log(ap1)
+        }
       }
     }
   }
@@ -193,5 +204,12 @@
       }
     }
     .loop(30)
+  }
+
+  .demo-spin-container {
+    display: inline-block;
+    width: 200px;
+    height: 100px;
+    position: relative;
   }
 </style>

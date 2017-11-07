@@ -1,6 +1,7 @@
 var express = require('express');
 var http = require("http");
 var router = express.Router();
+const musicAPI = require('music-api');
 
 /**
  * 服务：seed
@@ -10,6 +11,7 @@ var router = express.Router();
  * */
 router.get('/search', function (req, res, next) {
   var key = req.query.key;
+  var vendor = req.query.vendor;
   var pageNum = req.query.pageNum || 20;
   var current = req.query.current || 1;
   // current = current * pageNum - pageNum;
@@ -28,34 +30,34 @@ router.get('/search', function (req, res, next) {
     });
     return;
   }
-  var request = http.request(options, function (opt) {
-    var chunks = '';
-    opt.setEncoding('utf8');
-    opt.on("data", function (chunk) {
-      chunks += chunk;
-    });
-
-    opt.on("end", function () {
-      var data = JSON.parse(chunks);
-      data.code = '200';
-      data.msg = '歌曲获取成功';
-      res.send(data);
-    });
-    opt.on('timeout', function () {
-      request.end();
-      res.send({
-        code: '500',
-        msg: '连接超时'
-      });
-    });
-  }).on('error', function (e) {
-    console.error(e);
-    res.send({
-      code: '500',
-      msg: '接口错误'
-    });
-  });
-  request.end();
+  musicAPI.searchSong(vendor, {
+    key: key,
+    limit: pageNum,
+    page: current,
+  }).then((req) => {
+    req.code = '200';
+    req.msg = '图片获取成功';
+    res.send(req)
+  }).catch((err) => {
+    err.code = '500';
+    res.send(err)
+  })
 });
+
+
+router.get('/getSong', function (req, res, next) {
+  var id = req.query.id;
+  var vendor = req.query.vendor;
+  musicAPI.getSong(vendor, {
+    id
+  }).then((req) => {
+    req.code = '200';
+    req.msg = '获取歌曲链接成功';
+    res.send(req)
+  }).catch((err) => {
+    err.code = '500';
+    res.send(err)
+  })
+})
 
 module.exports = router;
