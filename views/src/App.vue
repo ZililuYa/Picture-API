@@ -21,7 +21,6 @@
     },
     mounted () {
       this.keyUp()
-      console.clear()
     },
     methods: {
       keyUp () {

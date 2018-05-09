@@ -24,6 +24,10 @@
           name: '音乐',
           cn: '',
           path: '/music'
+        }, {
+          name: '孵蛋',
+          cn: '',
+          path: '/brood'
         }
 //        }, {
 //          name: '视频',

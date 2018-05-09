@@ -5,11 +5,12 @@ import Image from '@/components/Image.vue'
 import Music from '@/components/Music.vue'
 import Seed from '@/components/Seed.vue'
 import Video from '@/components/Video.vue'
+import Brood from '@/components/Brood.vue'
 
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',
+  // mode: 'history',
   routes: [
     {
       path: '/',
@@ -35,6 +36,11 @@ export default new Router({
       path: '/video',
       name: 'Video',
       component: Video
+    },
+    {
+      path: '/brood',
+      name: 'Brood',
+      component: Brood
     }
   ]
 })
